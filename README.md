@@ -56,3 +56,6 @@ $ rm -rf .DS_Store
 
 ### Deprecation Warnings
 TensorFlow might give out a list of deprecation warnings - these can be safetly ignored.
+
+### Admin Permissions
+Note that this script might require administrative permissions in order to use the device's webcam. These must be password approved.
