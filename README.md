@@ -23,19 +23,6 @@ pip install -r requirements.txt
 
 ### Usage
 ```
-usage: LiveInput.py [-h] [-a] [-fr] [-gc] [-ed]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -a, --allModels       Run all three models: face recognition, gender
-                        classification, and emotion detection.
-  -fr, --faceReco       Run only face recognition model.
-  -gc, --genderClass    Run only gender classification model.
-  -ed, --emotionDetect  Run only emotion detection model.
-```
-
-### Example
-```
 $ python3 LiveInput.py
 ```
 
