@@ -1,5 +1,14 @@
 # Facial Information Extraction
 
+### About
+This project implements 3 core models which are capable for performing the followings tasks - facial recognition, gender classification, and emotion detection.
+
+Futhermore, 2 additional models, provide an end-to-end pipeline of all three tasks. Specifically:
+
+```RestoreModel.py``` performs all three tasks on given static images.
+
+```LiveModel.py``` performs all three tasks on given real-time images taken from device's webcam.
+
 ### Requirements
 ```
 seaborn==0.9.0
@@ -45,4 +54,4 @@ $ rm -rf .DS_Store
 TensorFlow might give out a list of deprecation warnings - these can be safetly ignored.
 
 ### Admin Permissions
-Note that this script might require administrative permissions in order to use the device's webcam. These must be password approved.
+Note that this script might require administrative permissions in order to use the device's webcam, which often must be password approved.
