@@ -183,7 +183,7 @@ class MyMethods:
 			else:
 				plt.show()
 
-	def plot_metrics(self, accuracy, loss, val_accuracy=None, val_loss=None, dpi=100):
+	def plot_metrics(self, accuracy, loss, val_accuracy=None, val_loss=None, dpi=100, save_title=None):
 		'''Plot graph subplots of the accuracy and loss of the model over the epochs during training.'''
 		fig, axes = plt.subplots(ncols=2, nrows=2, figsize=(8,5), constrained_layout=True, dpi=	dpi)
 		fig.suptitle('Metrics', fontsize=15)
@@ -214,6 +214,8 @@ class MyMethods:
 		# Plot
 		if val_accuracy is not None and val_loss is not None:
 			plt.legend()
+		if save_title is not None:
+			fig.savefig(f'{save_title}.pdf', bbox_inches='tight', format='pdf', dpi=200)
 		plt.show()
 	
 	
@@ -232,7 +234,9 @@ class MyMethods:
 			plt.scatter(x_fit[y_train==num, 0], x_fit[y_train==num, 1], s=1)
 		if title:
 			plt.title(title)
-		#plt.legend(loc=2)
+		plt.tight_layout()
+		if title is not None: 
+			plt.savefig(f'{title}.pdf', bbox_inches='tight', format='pdf', dpi=200)
 		plt.show()
 	
 	def get_false_classifications(self, y_real, all_preds):
@@ -278,7 +282,7 @@ class MyMethods:
 		fig.tight_layout()
 		plt.show()
 
-	def plot_all_confusion_matrices(y_true, y_pred, y_true_val, y_pred_val, y_true_test, y_pred_test, classes, normalize=False, title=None, cmap='GnBu', dpi=150):
+	def plot_all_confusion_matrices(y_true, y_pred, y_true_val, y_pred_val, y_true_test, y_pred_test, classes, normalize=False, title=None, cmap='GnBu', dpi=150, save_title=None):
 		'''Plot train, validation, and test confusion matrices'''
 		if not title:
 			if normalize:
@@ -328,6 +332,8 @@ class MyMethods:
 		fig.subplots_adjust(right=0.8)
 		cbar_ax = fig.add_axes([0.83, 0.315, 0.025, 0.375]) # [left, bottom, width, height]
 		fig.colorbar(im, cax=cbar_ax)
+		if save_title is not None:
+			fig.savefig(f'{save_title}.pdf', format='pdf', dpi=200)
 		# Plot
 		plt.show()
 
@@ -421,7 +427,7 @@ class MyMethods:
 	def randomColorGenerator(self, number_of_colors=1):
 		return ["#"+''.join([np.random.choice(list('0123456789ABCDEF')) for j in range(6)]) for i in range(number_of_colors)]
     
-	def plot_roc_auc_curves(self, fpr, tpr, roc_auc, xlim=(-0.0025, 0.03), ylim=(0.99, 1.001)):
+	def plot_roc_auc_curves(self, fpr, tpr, roc_auc, xlim=(-0.0025, 0.03), ylim=(0.99, 1.001), save_title=None):
 		'''Plot ROC AUC Curves'''
 		fig, axes = plt.subplots(nrows=1, ncols=2, dpi=150, figsize=(10,5))
 		# Define
@@ -454,7 +460,9 @@ class MyMethods:
 		axes[1].legend(loc=4)
 		# Plot
 		plt.legend(loc="lower right")
-		plt.tight_layout()
+		if save_title is not None:
+			fig.tight_layout() 
+			fig.savefig(f'{save_title}.pdf', bbox_inches='tight', format='pdf', dpi=200)
 		plt.show()
         
 	def process_data(self, folder, y_class, return_compressed=True):
@@ -590,12 +598,15 @@ class MyMethods:
 		print('Done!')
 		return pics, copies, all_faces, coordinates_list, normalised_faces, unnormalised_faces
 
-	def plot_before_after_tag(self, images, copies):
+	def plot_before_after_tag(self, images, copies, save_title=None):
 		'''Plot the before and after tag images side by side'''
 		for i, img in enumerate(images):
 			plt.figure(dpi=150)
 			plt.imshow(np.hstack((copies[i], img)))
 			plt.axis('off')
+			if save_title is not None:
+				plt.tight_layout()
+				plt.savefig(f'{save_title}.pdf', bbox_inches='tight', format='pdf', dpi=200)
 			plt.show()
 
 	def restore_model(self, graph, graph_dir, checkpoint_dir):

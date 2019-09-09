@@ -14,53 +14,45 @@ from IPython import display
 from datetime import datetime
 from mtcnn.mtcnn import MTCNN
 import matplotlib.colors as mc
-from myutilitymethods import MyMethods
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
-from sklearn.decomposition import PCA
-from matplotlib.patches import Rectangle
-from matplotlib.lines import Line2D
-from sklearn.metrics import classification_report
-from sklearn.utils.multiclass import unique_labels
-from sklearn.metrics import confusion_matrix as sk_cm
 from keras.regularizers import l2
 from keras.optimizers import Adam
+from matplotlib.lines import Line2D
 from keras.models import Sequential
+from sklearn.decomposition import PCA
+from myutilitymethods import MyMethods
+from matplotlib.patches import Rectangle
+from sklearn.metrics import classification_report
 from keras.losses import categorical_crossentropy
+from sklearn.utils.multiclass import unique_labels
+from sklearn.metrics import confusion_matrix as sk_cm
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D, BatchNormalization
 from keras.callbacks import ReduceLROnPlateau, TensorBoard, EarlyStopping, ModelCheckpoint
-
 
 # ========== METHODS ==========
 def process_data(folder, y_class, return_compressed=True):
     '''Get image data from folder'''
     imgs = []
-    
     for i, filename in enumerate(sorted(os.listdir(folder))):
-            
         # We don't want .DS_Store or any other data files
         if filename.split(".")[-1].lower() in {"jpeg", "jpg", "png"}:
-            
             # Load, Convert, Equalise, Standardise, Rescale
             img = cv2.imread(os.path.join(folder,filename))
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             img = mm.equalise_image(img, eq_type='HSV')
-
             if return_compressed:
                 img = mm.standardise_image(img)
                 img = mm.resize_image(img)
-            
             # Append
             if img is not None:                
                 imgs.append(img)
-    
     # Concatenate
     if return_compressed:
         x_test = np.concatenate(imgs, axis=0)
         x_test = x_test.reshape(x_test.shape[0]//28, 28, 28, 3)
         y_test = np.array([y_class]*len(x_test))
-              
     # Remove empty
     if return_compressed:
         indices_to_remove = []
@@ -69,12 +61,9 @@ def process_data(folder, y_class, return_compressed=True):
                 indices_to_remove.append(i)
         x_test = np.delete(x_test, indices_to_remove, axis=0)
         y_test = np.delete(y_test, indices_to_remove, axis=0)
-    
         if y_test.ndim == 1:
-            y_test = mm.one_hot_encode(y_test)
-                
+            y_test = mm.one_hot_encode(y_test) 
         return x_test, y_test
-    
     return np.array(imgs)
 
 def get_detected_faces_cv(image, image_copy, scaleFactor = 1.1, cascade_path='data/haarcascades/haarcascade_frontalface_alt2.xml'):
@@ -101,7 +90,6 @@ def get_detected_faces_mtcnn(image, image_copy, detector):
 
 def tag_images(images, all_faces, preds_reco, preds_fer, preds_gender, y_hat_prob_fer, coordinates_list, fontFace=cv2.FONT_HERSHEY_SIMPLEX, thickness=5):
     '''Tags faces according to predicted class on the given image'''
-   
     c = 0                                   # Counter
     for i, img in enumerate(images):        # For each image
         for j in range(len(all_faces[i])):  # For each face in each image
@@ -115,16 +103,13 @@ def tag_images(images, all_faces, preds_reco, preds_fer, preds_gender, y_hat_pro
             myFontScale = (imageWidth * imageHeight) / (1000 * 1000)
             myFaceCenter = (int(x+w/2), int(y+h/2))
             myRadius = int(h/2)
-            
             # Draw on image - rectangle for M, circle for F
             if preds_gender[c] == 0:
                 rect = cv2.rectangle(img, (x, y), (x+w, y+h), myColor, thickness)
             else:
                 circle = cv2.circle(img, myFaceCenter, myRadius, myColor, thickness)
-            
             cv2.putText(img, org=(myCoordinates), text=myLabelText, fontFace=fontFace, 
                         fontScale=myFontScale,color=(0,255,0), thickness=thickness)
-            
             # Increment counter
             c += 1
 
@@ -180,43 +165,34 @@ def load_final_test_images(folder='TestImages/', detection_method='cv'):
     coordinates_list = []
     normalised_faces = []
     unnormalised_faces = []
-    
     if detection_method == 'mtcnn':
         detector = MTCNN(min_face_size=50)
-    
     # Get images
     print('Getting images...')
     for filename in sorted(os.listdir(folder)):
         pic_of_interest = cv2.imread(os.path.join(folder, filename))
         pic_of_interest = mm.convertToRGB(pic_of_interest)
         pics.append(pic_of_interest)
-
     # Get face coordinates
     print('Getting face coordinates...')
     for pic in pics:
         image_copy = pic.copy()
         copies.append(image_copy)
-        
         if detection_method == 'cv':
             faces_batch_temp, coordinates_temp = get_detected_faces_cv(pic, image_copy)
         else:
             faces_batch_temp, coordinates_temp = get_detected_faces_mtcnn(pic, image_copy, detector)
-        
         # Find fake-faces
         indices_to_remove = []
-        
         for i, face in enumerate(faces_batch_temp):
             if face.size == 0:
                 indices_to_remove.append(i)
-        
         # Remove
         faces_batch = np.delete(faces_batch_temp, indices_to_remove, axis=0)
         coordinates = np.delete(coordinates_temp, indices_to_remove, axis=0)
-        
         # Append
         all_faces.append(faces_batch)
         coordinates_list.append(coordinates)
-
     # Convert faces
     print('Processing faces...')
     for face_batch in all_faces:
@@ -226,12 +202,10 @@ def load_final_test_images(folder='TestImages/', detection_method='cv'):
                 face = mm.equalise_image(face, eq_type='HSV')
                 face = mm.standardise_image(face)
                 normalised_faces.append(mm.resize_image(face))
-            
     print('Done!')
     return pics, copies, all_faces, coordinates_list, normalised_faces, unnormalised_faces
 
 def plot_before_after_tag(images, copies):
-
     for i, img in enumerate(images):
         plt.figure(dpi=150)
         plt.imshow(np.hstack((copies[i], img)))
@@ -239,24 +213,19 @@ def plot_before_after_tag(images, copies):
         plt.tight_layout()
         plt.legend(lines, ['Myself', 'Sister', 'Mother', 'Father'], 
                    bbox_to_anchor=(0.0, 1.15), loc="upper left", ncol=4)
-        #rand_name = str(np.random.randint(1, 100000))
-        #plt.savefig(f'{rand_name}.pdf', bbox_inches='tight', format='pdf', dpi=200)
         plt.show()
 
 def restore_model(graph, graph_dir, checkpoint_dir):
     '''Import graph and restore model variables'''
     with graph.as_default():
-        
         # Load graph and restore tf variables
         saver = tf.train.import_meta_graph(graph_dir)
         latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
         sess = tf.Session(graph=graph)
         saver.restore(sess, latest_checkpoint)
-
         # Get relevant tensors
         tf_cnn_softmax = graph.get_tensor_by_name('CNN/Softmax:0')
         tf_placeholder = graph.get_tensor_by_name('Placeholder:0')
-
     return sess, tf_cnn_softmax, tf_placeholder
 
 def run_model(sess, tf_placeholder, tf_cnn_softmax, x_test):
