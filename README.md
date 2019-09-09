@@ -47,6 +47,7 @@ OpenCV(4.1.0) /Users/travis/build/skvark/opencv-python/opencv/modules/objdetect/
 ```
 
 Cause: a .DS_Store file in the directory of the images causes this error.
+
 Solution: navigate to the directory containing the images, and delete the file in question.
 ```
 $ cd myImageDirectory
