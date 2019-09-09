@@ -1,2 +1,57 @@
 # Facial Information Extraction
-University of Bath MSc Data Science Thesis
+
+### Requirements
+```
+seaborn==0.9.0
+Keras==2.2.4
+numpy==1.16.4
+opencv_python_headless==4.1.0.25
+mtcnn==0.0.9
+albumentations==0.3.0
+matplotlib==3.1.0
+tensorflow==1.14.0
+pandas==0.24.2
+ipython==7.8.0
+MyMethods==1.0.0
+scikit_learn==0.21.3
+```
+
+### Installation
+```
+pip install -r requirements.txt
+```
+
+### Usage
+```
+usage: LiveInput.py [-h] [-a] [-fr] [-gc] [-ed]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -a, --allModels       Run all three models: face recognition, gender
+                        classification, and emotion detection.
+  -fr, --faceReco       Run only face recognition model.
+  -gc, --genderClass    Run only gender classification model.
+  -ed, --emotionDetect  Run only emotion detection model.
+```
+
+### Example
+```
+$ python3 LiveInput.py
+```
+
+### Common Errors
+
+Sample error:
+```
+OpenCV(4.1.0) /Users/travis/build/skvark/opencv-python/opencv/modules/objdetect/src/cascadedetect.cpp:1658: error: (-215:Assertion failed) !empty() in function 'detectMultiScale'
+```
+
+Cause: a .DS_Store file in the directory of the images causes this error.
+Solution: navigate to the directory containing the images, and delete the file in question.
+```
+$ cd myImageDirectory
+$ rm -rf .DS_Store
+```
+
+### Deprecation Warnings
+TensorFlow might give out a list of deprecation warnings - these can be safetly ignored.
