@@ -1,4 +1,4 @@
-# Facial Information Extraction
+# Optimising Facial Information Extraction and Processing using Convolutional Neural Networks
 
 ### About
 This project implements 3 core models which are capable for performing the followings tasks - facial recognition, gender classification, and emotion detection.
