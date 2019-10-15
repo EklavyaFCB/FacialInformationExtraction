@@ -62,3 +62,5 @@ Note that this script might require administrative permissions in order to use t
 ![Metrics](deepcnn_metrics.png)
 
 ![Architecture](MyCNN.png)
+
+![CM](CM_deepcnn.png)
