@@ -58,3 +58,7 @@ Note that this script might require administrative permissions in order to use t
 
 ### Gallery
 ![EndToEndModel](EndToEnd.png)
+
+![Metrics](deepcnn_metrics.pdf)
+
+![Architecture](MyCNN.pdf)
